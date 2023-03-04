@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProgressBar">
+        <!--  color of the progressbar. -->
+        <attr name="progressBar_colorProgress" format="color" />
+        <!--  color of the container. -->
+        <attr name="progressBar_colorBackground" format="color" />
+        <!--  Default text of the progressbar label. -->
+        <attr name="progressBar_labelText" format="string" />
+        <!--  color of the progressbar. -->
+        <attr name="progressBar_colorLabelText" format="color" />
+    </declare-styleable>
+</resources>

@@ -17,10 +17,14 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.progressBar.setOnProgressChangedListener {
+            binding.progressBar.labelText =  "${it}%"
+        }
+
         lifecycleScope.launch {
             for (i in 0..100) {
-                withContext(Dispatchers.IO) { delay(500) }
-                binding.progressBar.setProgress(i)
+                withContext(Dispatchers.IO) { delay(100) }
+                binding.progressBar.progress = i
             }
         }
     }
