@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rool.ui.theme.PogressBarTheme
+import com.rool.ui.theme.ProgressBarTheme
 
 class ComposeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +33,7 @@ fun ComposeProgressBar() {
 @Preview(showBackground = true)
 @Composable
 fun ProgressBarPreview() {
-    PogressBarTheme {
+    ProgressBarTheme {
         ComposeProgressBar()
     }
 }
