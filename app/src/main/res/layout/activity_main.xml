@@ -15,7 +15,7 @@
         app:progressBar_colorLabelText="@color/purple_700"
         app:progressBar_isAnimated="true"
         app:progressBar_animationDuration="2000"
-        app:progressBar_animationType="anticipate"
+        app:progressBar_animationType="bounce"
         />
 
     <Button

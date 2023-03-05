@@ -17,14 +17,12 @@ import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.annotation.ColorInt
-import com.rool.R
 
-class ProgressBar : FrameLayout {
+public class ProgressBar : FrameLayout {
 
-    var maxProgress: Int = 100
+    public var maxProgress: Int = 100
 
-    var progress: Int = 0
+    public var progress: Int = 0
         set(value) {
             field = if (value >= maxProgress) {
                 maxProgress
@@ -35,47 +33,44 @@ class ProgressBar : FrameLayout {
             onProgressListener?.onProgressChanged(field)
         }
 
-    @ColorInt
-    var colorProgress: Int = Color.MAGENTA
+    public var colorProgress: Int = Color.MAGENTA
 
-    @ColorInt
-    var colorBackground: Int = Color.WHITE
+    public var colorBackground: Int = Color.WHITE
         set(value) {
             field = value
             updateBackground()
         }
 
-    var labelText: CharSequence? = ""
+    public var labelText: CharSequence? = ""
         set(value) {
             field = value
             this.progressText.text = value
         }
 
-    @ColorInt
-    var labelColor: Int = Color.BLACK
+    public var labelColor: Int = Color.BLACK
         set(value) {
             field = value
             progressText.setTextColor(labelColor)
         }
 
-    var isAnimated: Boolean = true
+    public var isAnimated: Boolean = true
 
-    var animationDuration: Int = 1000
+    public var animationDuration: Int = 1000
 
-    var animationType: AnimationType = AnimationType.BOUNCE
+    public var animationType: AnimationType = AnimationType.BOUNCE
 
     private var onProgressListener: OnProgressChangedListener? = null
     private val progressBarView = View(context)
     private val progressText = TextView(context)
 
-    constructor(context: Context) : super(context)
+    public constructor(context: Context) : super(context)
 
-    constructor(
+    public constructor(
         context: Context,
         attributeSet: AttributeSet
     ) : this(context, attributeSet, 0)
 
-    constructor(
+    public constructor(
         context: Context,
         attributeSet: AttributeSet,
         defStyle: Int
@@ -87,7 +82,7 @@ class ProgressBar : FrameLayout {
         getAttrs(attributeSet, defStyle)
     }
 
-    fun setOnProgressChangedListener(block: (Int) -> Unit) {
+    public fun setOnProgressChangedListener(block: (Int) -> Unit) {
         this.onProgressListener = object : OnProgressChangedListener {
             override fun onProgressChanged(currentProgress: Int) {
                 block(currentProgress)
@@ -182,14 +177,14 @@ class ProgressBar : FrameLayout {
         background = ColorDrawable(colorBackground)
     }
 
-    interface OnProgressChangedListener {
-        fun onProgressChanged(currentProgress: Int)
+    public interface OnProgressChangedListener {
+        public fun onProgressChanged(currentProgress: Int)
     }
 
-    enum class AnimationType(val value: Int) {
+    public enum class AnimationType(public val value: Int) {
         LINEAR(0), ANTICIPATE(1), ACCELERATE(2), BOUNCE(3), ACCELERATE_DECELERATE(4);
 
-        fun getInterpolator(): Interpolator =
+        public fun getInterpolator(): Interpolator =
             when (value) {
                 LINEAR.value -> LinearInterpolator()
                 ANTICIPATE.value -> AnticipateInterpolator()
