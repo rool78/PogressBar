@@ -21,11 +21,10 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.labelText =  "${it}%"
         }
 
-        lifecycleScope.launch {
-            for (i in 0..100) {
-                withContext(Dispatchers.IO) { delay(100) }
-                binding.progressBar.progress = i
-            }
+        binding.progressBar.progress = 50
+
+        binding.button.setOnClickListener {
+            binding.progressBar.progress += 5
         }
     }
 

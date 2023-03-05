@@ -1,15 +1,20 @@
 package com.rool.progressbar
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.BounceInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import com.rool.R
 import com.rool.progressbar.listeners.OnProgressChangedListener
 
@@ -19,9 +24,13 @@ class ProgressBar : FrameLayout {
 
     var progress: Int = 0
         set(value) {
-            field = value
+            field = if (progress >= maxProgress) {
+                maxProgress
+            } else {
+                value
+            }
             updateProgress()
-            onProgressListener?.onProgressChanged(this.progress)
+            onProgressListener?.onProgressChanged(field)
         }
 
     @ColorInt
@@ -37,20 +46,24 @@ class ProgressBar : FrameLayout {
     var labelText: CharSequence? = ""
         set(value) {
             field = value
-            this.progressLabel.text = value
+            this.progressText.text = value
         }
 
     @ColorInt
     var labelColor: Int = Color.BLACK
         set(value) {
             field = value
-            progressLabel.setTextColor(labelColor)
+            progressText.setTextColor(labelColor)
         }
+
+    var isAnimated: Boolean = true
+
+    var animationDuration: Int = 1000
 
     var onProgressListener: OnProgressChangedListener? = null
 
-    private val progressBar = View(context)
-    private val progressLabel = TextView(context)
+    private val progressBarView = View(context)
+    private val progressText = TextView(context)
 
     constructor(context: Context) : super(context)
 
@@ -85,55 +98,78 @@ class ProgressBar : FrameLayout {
     ) {
         val typedArray =
             context.obtainStyledAttributes(attributeSet, R.styleable.ProgressBar, defStyleAttr, 0)
-        try {
-            setTypeArray(typedArray)
-        } finally {
-            typedArray.recycle()
-        }
+        obtainAttrs(typedArray)
+        typedArray.recycle()
     }
 
-    private fun setTypeArray(typedArray: TypedArray) {
+    private fun obtainAttrs(typedArray: TypedArray) {
         this.labelText = typedArray.getString(R.styleable.ProgressBar_progressBar_labelText)
         this.labelColor =
             typedArray.getColor(R.styleable.ProgressBar_progressBar_colorLabelText, labelColor)
         this.colorProgress =
             typedArray.getColor(R.styleable.ProgressBar_progressBar_colorProgress, colorProgress)
         this.colorBackground =
-            typedArray.getColor(R.styleable.ProgressBar_progressBar_colorBackground, colorBackground)
+            typedArray.getColor(
+                R.styleable.ProgressBar_progressBar_colorBackground,
+                colorBackground
+            )
+        this.isAnimated =
+            typedArray.getBoolean(R.styleable.ProgressBar_progressBar_isAnimated, isAnimated)
+        this.animationDuration = typedArray.getInt(
+            R.styleable.ProgressBar_progressBar_animationDuration,
+            animationDuration
+        )
     }
 
     private fun updateProgress() {
-        val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        if (this.progress < maxProgress) {
-            params.width = getProportionalProgress()
-        }
-        updateProgressBar(params)
+        updateProgressBar()
         updateLabel()
+        if (this.isAnimated) {
+            animateProgress()
+        } else {
+            setProgress()
+        }
     }
 
-    private fun updateProgressBar(params: LayoutParams) {
-        progressBar.background = GradientDrawable().apply {
-            setColor(colorProgress)
-        }
-        progressBar.layoutParams = params
-        removeView(progressBar)
-        addView(progressBar)
+    private fun updateProgressBar() {
+        progressBarView.background = ColorDrawable(colorProgress)
+        removeView(progressBarView)
+        addView(progressBarView)
     }
+
+    private fun animateProgress() {
+        ValueAnimator.ofFloat(0f, 1f)
+            .apply {
+                interpolator = BounceInterpolator()
+                duration = this@ProgressBar.animationDuration.toLong()
+                addUpdateListener {
+                    val value = it.animatedValue as Float
+                    val animatedWidth = getProportionalProgress() * value
+                    progressBarView.layoutParams =
+                        LayoutParams(animatedWidth.toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
+                }
+            }.also { it.start() }
+    }
+
+    private fun setProgress() {
+        post {
+            progressBarView.layoutParams = LayoutParams(getProportionalProgress(), ViewGroup.LayoutParams.MATCH_PARENT)
+        }
+    }
+
 
     private fun updateLabel() {
         val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        progressLabel.layoutParams = params
-        progressLabel.gravity = Gravity.END
-        removeView(progressLabel)
-        addView(progressLabel)
+        progressText.layoutParams = params
+        progressText.gravity = Gravity.END
+        removeView(progressText)
+        addView(progressText)
     }
 
     private fun getProportionalProgress(): Int =
-        (progress * this.width) / maxProgress
+        (this.progress * this.width) / maxProgress
 
     private fun updateBackground() {
-        background = GradientDrawable().apply {
-            setColor(ProgressBar@colorBackground)
-        }
+        background = ColorDrawable(colorBackground)
     }
 }

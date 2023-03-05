@@ -9,5 +9,12 @@
         <attr name="progressBar_labelText" format="string" />
         <!--  color of the progressbar. -->
         <attr name="progressBar_colorLabelText" format="color" />
+        <!--   animate progress bar-->
+        <attr name="progressBar_isAnimated" format="boolean" />
+        <!--   duration of animation-->
+        <attr name="progressBar_animationDuration" format="integer" />
+        <!-- animation type-->
+<!--        TODO-->
+
     </declare-styleable>
 </resources>
