@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ProgressBar">
+        <!-- progress-->
+        <attr name="progressBar_progress" format="integer" />
         <!--  color of the progressbar. -->
         <attr name="progressBar_colorProgress" format="color" />
         <!--  color of the container. -->
@@ -14,7 +16,13 @@
         <!--   duration of animation-->
         <attr name="progressBar_animationDuration" format="integer" />
         <!-- animation type-->
-<!--        TODO-->
+        <attr name="progressBar_animationType" format="enum">
+            <enum name="linear" value="0" />
+            <enum name="anticipate" value="1" />
+            <enum name="accelerate" value="2" />
+            <enum name="bounce" value="3" />
+            <enum name="accelerateDecelerate" value="4" />
+        </attr>
 
     </declare-styleable>
 </resources>

@@ -5,18 +5,20 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AnticipateInterpolator
 import android.view.animation.BounceInterpolator
+import android.view.animation.Interpolator
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import com.rool.R
-import com.rool.progressbar.listeners.OnProgressChangedListener
 
 class ProgressBar : FrameLayout {
 
@@ -24,7 +26,7 @@ class ProgressBar : FrameLayout {
 
     var progress: Int = 0
         set(value) {
-            field = if (progress >= maxProgress) {
+            field = if (value >= maxProgress) {
                 maxProgress
             } else {
                 value
@@ -60,8 +62,9 @@ class ProgressBar : FrameLayout {
 
     var animationDuration: Int = 1000
 
-    var onProgressListener: OnProgressChangedListener? = null
+    var animationType: AnimationType = AnimationType.BOUNCE
 
+    private var onProgressListener: OnProgressChangedListener? = null
     private val progressBarView = View(context)
     private val progressText = TextView(context)
 
@@ -119,6 +122,11 @@ class ProgressBar : FrameLayout {
             R.styleable.ProgressBar_progressBar_animationDuration,
             animationDuration
         )
+        this.animationType = typedArray.getInt(
+                R.styleable.ProgressBar_progressBar_animationType,
+                animationType.value
+            ).mapToAnimationType()
+        this.progress = typedArray.getInt(R.styleable.ProgressBar_progressBar_progress, progress)
     }
 
     private fun updateProgress() {
@@ -140,7 +148,7 @@ class ProgressBar : FrameLayout {
     private fun animateProgress() {
         ValueAnimator.ofFloat(0f, 1f)
             .apply {
-                interpolator = BounceInterpolator()
+                interpolator = this@ProgressBar.animationType.getInterpolator()
                 duration = this@ProgressBar.animationDuration.toLong()
                 addUpdateListener {
                     val value = it.animatedValue as Float
@@ -153,7 +161,8 @@ class ProgressBar : FrameLayout {
 
     private fun setProgress() {
         post {
-            progressBarView.layoutParams = LayoutParams(getProportionalProgress(), ViewGroup.LayoutParams.MATCH_PARENT)
+            progressBarView.layoutParams =
+                LayoutParams(getProportionalProgress(), ViewGroup.LayoutParams.MATCH_PARENT)
         }
     }
 
@@ -172,4 +181,35 @@ class ProgressBar : FrameLayout {
     private fun updateBackground() {
         background = ColorDrawable(colorBackground)
     }
+
+    interface OnProgressChangedListener {
+        fun onProgressChanged(currentProgress: Int)
+    }
+
+    enum class AnimationType(val value: Int) {
+        LINEAR(0), ANTICIPATE(1), ACCELERATE(2), BOUNCE(3), ACCELERATE_DECELERATE(4);
+
+        fun getInterpolator(): Interpolator =
+            when (value) {
+                LINEAR.value -> LinearInterpolator()
+                ANTICIPATE.value -> AnticipateInterpolator()
+                ACCELERATE.value -> AccelerateInterpolator()
+                BOUNCE.value -> BounceInterpolator()
+                ACCELERATE_DECELERATE.value -> AccelerateDecelerateInterpolator()
+                else -> {
+                    LinearInterpolator()
+                }
+            }
+    }
+
+    private fun Int.mapToAnimationType() : AnimationType = when {
+            this == AnimationType.LINEAR.value -> AnimationType.LINEAR
+            this == AnimationType.ANTICIPATE.value -> AnimationType.ANTICIPATE
+            this == AnimationType.ACCELERATE.value -> AnimationType.ACCELERATE
+            this == AnimationType.BOUNCE.value -> AnimationType.BOUNCE
+            this == AnimationType.ACCELERATE_DECELERATE.value -> AnimationType.ACCELERATE_DECELERATE
+            else -> {
+                AnimationType.LINEAR
+            }
+        }
 }

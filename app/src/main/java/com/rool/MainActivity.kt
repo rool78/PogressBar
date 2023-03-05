@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.labelText =  "${it}%"
         }
 
-        binding.progressBar.progress = 50
+        binding.progressBar.progress = 96
 
         binding.button.setOnClickListener {
             binding.progressBar.progress += 5

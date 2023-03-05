@@ -13,8 +13,9 @@
         android:layout_marginHorizontal="28dp"
         app:progressBar_colorProgress="@color/teal_700"
         app:progressBar_colorLabelText="@color/purple_700"
-        app:progressBar_isAnimated="false"
-        app:progressBar_animationDuration="5000"
+        app:progressBar_isAnimated="true"
+        app:progressBar_animationDuration="2000"
+        app:progressBar_animationType="anticipate"
         />
 
     <Button
