@@ -6,6 +6,7 @@ Simple and customizable Progress bar for Android
 <p/>
 
 ## How to include in you project:
+Coming soon. Nexus Repository already requested.
 
 ## Create ProgressBar via xml:
 You can insert the progress bar in you xml as usual, you can set those attibutes if desired:
