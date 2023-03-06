@@ -1,7 +1,30 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'io.github.rool78'
+    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_ARTIFACT_ID = 'progressbar'
+    PUBLISH_DESCRIPTION = 'ProgressBar Android SDK'
+    PUBLISH_URL = 'https://github.com/rool78/ProgressBar'
+    PUBLISH_LICENSE_NAME = 'Apache License'
+    PUBLISH_LICENSE_URL =
+            'https://github.com/rool78/ProgressBar/blob/master/LICENSE'
+    PUBLISH_DEVELOPER_ID = 'rool78'
+    PUBLISH_DEVELOPER_NAME = 'Raul Maza'
+    PUBLISH_DEVELOPER_EMAIL = 'raul.mazaa@mail.com'
+    PUBLISH_SCM_CONNECTION =
+            'scm:git:github.com/rool78/ProgressBar.git'
+    PUBLISH_SCM_DEVELOPER_CONNECTION =
+            'scm:git:ssh://github.com/rool78/ProgressBar.git'
+    PUBLISH_SCM_URL =
+            'https://github.com/rool78/ProgressBar/tree/master'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     namespace 'com.rool.progressbar'
@@ -32,4 +55,8 @@ android {
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions.freeCompilerArgs += ["-Xexplicit-api=strict"]
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
