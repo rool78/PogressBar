@@ -1,5 +1,5 @@
 // Create variables with empty default values
-ext["signing.keyId"] = 'fghgfh'
+ext["signing.keyId"] = ''
 ext["signing.password"] = ''
 ext["signing.secretKeyRingFile"] = ''
 ext["ossrhUsername"] = ''
